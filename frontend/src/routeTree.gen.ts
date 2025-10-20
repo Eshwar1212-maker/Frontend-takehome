@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TermsheetIndexRouteImport } from './routes/termsheet/index'
+import { Route as DealsIndexRouteImport } from './routes/deals/index'
+import { Route as DealsDynamicRouteImport } from './routes/deals/$dynamic'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,30 +24,48 @@ const TermsheetIndexRoute = TermsheetIndexRouteImport.update({
   path: '/termsheet/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DealsIndexRoute = DealsIndexRouteImport.update({
+  id: '/deals/',
+  path: '/deals/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DealsDynamicRoute = DealsDynamicRouteImport.update({
+  id: '/deals/$dynamic',
+  path: '/deals/$dynamic',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/deals/$dynamic': typeof DealsDynamicRoute
+  '/deals': typeof DealsIndexRoute
   '/termsheet': typeof TermsheetIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/deals/$dynamic': typeof DealsDynamicRoute
+  '/deals': typeof DealsIndexRoute
   '/termsheet': typeof TermsheetIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/deals/$dynamic': typeof DealsDynamicRoute
+  '/deals/': typeof DealsIndexRoute
   '/termsheet/': typeof TermsheetIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/termsheet'
+  fullPaths: '/' | '/deals/$dynamic' | '/deals' | '/termsheet'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/termsheet'
-  id: '__root__' | '/' | '/termsheet/'
+  to: '/' | '/deals/$dynamic' | '/deals' | '/termsheet'
+  id: '__root__' | '/' | '/deals/$dynamic' | '/deals/' | '/termsheet/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DealsDynamicRoute: typeof DealsDynamicRoute
+  DealsIndexRoute: typeof DealsIndexRoute
   TermsheetIndexRoute: typeof TermsheetIndexRoute
 }
 
@@ -65,11 +85,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsheetIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/deals/': {
+      id: '/deals/'
+      path: '/deals'
+      fullPath: '/deals'
+      preLoaderRoute: typeof DealsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/deals/$dynamic': {
+      id: '/deals/$dynamic'
+      path: '/deals/$dynamic'
+      fullPath: '/deals/$dynamic'
+      preLoaderRoute: typeof DealsDynamicRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DealsDynamicRoute: DealsDynamicRoute,
+  DealsIndexRoute: DealsIndexRoute,
   TermsheetIndexRoute: TermsheetIndexRoute,
 }
 export const routeTree = rootRouteImport
